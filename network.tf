@@ -1,17 +1,15 @@
 resource "oci_core_vcn" "generated_oci_core_vcn" {
   cidr_block     = "10.0.0.0/16"
   compartment_id = var.compartment_id
-  defined_tags   = merge(local.pre_defined_tags, {
-    "Resource-Tag.Family" = "Core",
-    "Resource-Tag.Name"   = "vcn-20240702-2137",
-    "Resource-Tag.Type"  = "core_vcn"
+  defined_tags = merge(local.pre_defined_tags, {
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = "vcn-20240702-2137",
+    "Resource-Tags.Type"   = "core_vcn"
   })
-  display_name   = "vcn-20240702-2137"
-  dns_label      = "vcn07022151"
+  display_name = "vcn-20240702-2137"
+  dns_label    = "vcn07022151"
   lifecycle {
     ignore_changes = [
-      defined_tags,
-      freeform_tags
     ]
   }
 }
@@ -19,10 +17,10 @@ resource "oci_core_vcn" "generated_oci_core_vcn" {
 resource "oci_core_subnet" "generated_oci_core_subnet" {
   cidr_block     = "10.0.0.0/24"
   compartment_id = var.compartment_id
-  defined_tags   = merge(local.pre_defined_tags, {
-    "Resource-Tag.Family" = "Core",
-    "Resource-Tag.Name"   = "subnet-20240702-2137",
-    "Resource-Tag.Type"  = "core_subnet"
+  defined_tags = merge(local.pre_defined_tags, {
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = "subnet-20240702-2137",
+    "Resource-Tags.Type"   = "core_subnet"
   })
   display_name   = "subnet-20240702-2137"
   dns_label      = "subnet07022151"
@@ -30,8 +28,6 @@ resource "oci_core_subnet" "generated_oci_core_subnet" {
   vcn_id         = oci_core_vcn.generated_oci_core_vcn.id
   lifecycle {
     ignore_changes = [
-      defined_tags,
-      freeform_tags
     ]
   }
 }
@@ -41,15 +37,13 @@ resource "oci_core_internet_gateway" "generated_oci_core_internet_gateway" {
   display_name   = "Internet Gateway vcn-20240702-2137"
   enabled        = "true"
   vcn_id         = oci_core_vcn.generated_oci_core_vcn.id
-  defined_tags   = merge(local.pre_defined_tags, {
-    "Resource-Tag.Family" = "Core",
-    "Resource-Tag.Name"   = "Internet Gateway vcn-20240702-2137",
-    "Resource-Tag.Type"  = "core_internet_gateway"
+  defined_tags = merge(local.pre_defined_tags, {
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = "Internet Gateway vcn-20240702-2137",
+    "Resource-Tags.Type"   = "core_internet_gateway"
   })
   lifecycle {
     ignore_changes = [
-      defined_tags,
-      freeform_tags
     ]
   }
 }
@@ -61,15 +55,13 @@ resource "oci_core_default_route_table" "generated_oci_core_default_route_table"
     network_entity_id = oci_core_internet_gateway.generated_oci_core_internet_gateway.id
   }
   manage_default_resource_id = oci_core_vcn.generated_oci_core_vcn.default_route_table_id
-  defined_tags               = merge(local.pre_defined_tags, {
-    "Resource-Tag.Family" = "Core",
-    "Resource-Tag.Name"   = oci_core_vcn.generated_oci_core_vcn.default_route_table_id,
-    "Resource-Tag.Type"  = "core_default_route_table"
+  defined_tags = merge(local.pre_defined_tags, {
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = oci_core_vcn.generated_oci_core_vcn.default_route_table_id,
+    "Resource-Tags.Type"   = "core_default_route_table"
   })
   lifecycle {
     ignore_changes = [
-      defined_tags,
-      freeform_tags
     ]
   }
 }

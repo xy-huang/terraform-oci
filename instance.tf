@@ -56,9 +56,9 @@ resource "oci_core_instance" "generated_oci_core_instance" {
     subnet_id                 = oci_core_subnet.generated_oci_core_subnet.id
   }
   defined_tags = merge(local.pre_defined_tags, {
-    "Resource-Tag.Family" = "Core",
-    "Resource-Tag.Name"   = "instance-default",
-    "Resource-Tag.Type"  = "core_instance"
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = "instance-default",
+    "Resource-Tags.Type"   = "core_instance"
   })
   display_name = "instance-default"
   instance_options {
@@ -82,9 +82,7 @@ resource "oci_core_instance" "generated_oci_core_instance" {
 
   lifecycle {
     ignore_changes = [
-      source_details.0.source_id,
-      defined_tags,
-      freeform_tags
+      source_details.0.source_id
     ]
   }
 }

@@ -10,6 +10,7 @@ You can change the backend configuration to use other storage options like objec
 All above resources are covered by the OCI always-free tier unless you already have more resources in your account. 
 
 ## Prerequisites
+***Note: you can apply the other repository [terraform-oci-core](https://github.com/xy-huang/terraform-oci-core) first, which will create a domain `Automation` with group `Command_Line_Interface_Operators` and user `terraform`, and necessary tags and policies, so that you can ignore tag and policy part in below sections.***
 ### Install terraform
 To get started with this repository, you will need to have Terraform installed on your machine. You can download Terraform from the [official website](https://www.terraform.io/downloads.html).
 
@@ -24,9 +25,9 @@ If your OCI account type is always-free, You are likely to encounter the "Out of
 ***Note: Be careful to ensure that your account does not exceed the always-free capacity when you create or modify OCI resources in your account. It's better to review your billing report monthly(daily) to avoid unexpected costs.***
 
 ### Create OCI Object Storage & Archive Storage Bucket
-By default the terraform state file defined in `backend.tf` will be stored in OCI Object Storage & Archive Storage Bucket, and terraform will use this bucket as AWS S3 compatible backend.
+By default the terraform state file defined in `[backend.tf](backend.tf)` will be stored in OCI Object Storage & Archive Storage Bucket, and terraform will use this bucket as AWS S3 compatible backend.
 
-Navigate to `Nevigation menu -> Object Storage -> Buckets`, click on `Create Bucket`, and then fill in the required information to create the bucket `bucket_name`. 
+Navigate to `Nevigation menu -> Object Storage -> Buckets`, click on `Create Bucket`, and then fill in the required information to create the bucket `bucket_name`. ***You can also use existing bucket.***
 
 After that, click the bucket and get the `Namespace` value.
 
@@ -71,6 +72,10 @@ TF_VAR_fingerprint=<Fingerprint>
 TF_VAR_private_key_path=<path_to_private_key>
 ```
 
+### Create necessary tags
+
+Navigate to `Nevigation menu -> Governance & Administration -> Tag Namespaces`, and then click on `Create Tag Namespace`. We need to create 2 Tag Namespaces `Operation-Tags` and `Resource-Tags`. And then we need to create 2 Tags in `Operation-Tags`: `CreatedBy` and `TerraformVersion`, and 4 Tags in `Resource-Tags`: `Family`, `Name`, `Region` and `Type`.
+
 ### Create required policies
 
 Assuming you are using account named `{username}` which belongs to domain `{domain_name}` and in group `{group_name}`.
@@ -112,16 +117,10 @@ chmod 600 id_ed25519
 This will generate a new SSH key pair with the name `id_ed25519` and `id_ed25519.pub` in the ~/.ssh. You can then use this key pair to create and connect to your instances.
 
 ## Quick Start
-Clone this repository to your local machine using the following command:
+Fork this repository to your github account and clone it to your local machine, then navigate to the cloned repository directory:
 
 ```
-git clone https://github.com/xy-huang/terraform-oci-core.git
-```
-
-Navigate to the cloned repository directory:
-
-```
-cd terraform-oci-core
+cd terraform-oci
 ```
 
 create a file called `s3.tfbackend`
@@ -153,6 +152,18 @@ user_data = <<-EOT
 EOT
 ```
 
+Set terraform version as environment variable
+
+```shell
+export TF_VAR_terraform_version=`terraform version | grep 'Terraform v' | sed -E 's/Terraform v(.*)/\1/'`
+```
+
+Or you can simpliy run
+
+```shell
+source pre_init.sh
+```
+
 Initialize the Terraform configuration
 
 ```shell
@@ -170,6 +181,8 @@ Create the resources
 ```shell
 terraform apply -var-file=.tfvars
 ```
+
+If success, the output will describe the new instance details, you can ssh to it with username `ubuntu` and the private key `id_ed25519`.
 
 ## Usage
 
