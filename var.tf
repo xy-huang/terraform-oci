@@ -14,3 +14,15 @@ variable "ssh_authorized_keys" {
 variable "user_data" {
   description = "user script to run on instance"
 }
+variable "on_premises_cidr" {
+  description = "cidr for on-premises network"
+  default = "192.168.0.0/24"
+}
+variable "vcn_cidr" {
+  description = "cidr for vcn"
+  default = "10.0.0.0/16"
+}
+variable "subnet_cidr" {
+  description = "cidr for subnet"
+  default = "10.0.0.0/24"
+}
