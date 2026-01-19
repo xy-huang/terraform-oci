@@ -11,7 +11,7 @@ All above resources are covered by the OCI always-free tier unless you already h
 
 ## Prerequisites
 ***Note: you can apply the other repository [terraform-oci-core](https://github.com/xy-huang/terraform-oci-core) first, which will create a domain `Automation` with group `Command_Line_Interface_Operators` and user `terraform`, and necessary tags and policies, so that you can ignore tag and policy part in below sections.***
-### Install terraform
+### Install terraform (\<v1.12.0)
 To get started with this repository, you will need to have Terraform installed on your machine. You can download Terraform from the [official website](https://www.terraform.io/downloads.html).
 
 set terraform_version as environment variable (to be used in resource tag `Operation-Tags.TerraformVersion`)

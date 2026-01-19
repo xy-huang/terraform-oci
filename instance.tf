@@ -86,7 +86,8 @@ resource "oci_core_instance" "generated_oci_core_instance" {
 
   lifecycle {
     ignore_changes = [
-      source_details.0.source_id
+      source_details.0.source_id,
+      create_vnic_details
     ]
   }
   depends_on = [
