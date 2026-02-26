@@ -15,7 +15,7 @@ data "oci_core_images" "ubuntu" {
   }
   filter {
     name   = "operating_system_version"
-    values = ["^.*(M|m)inimal.*$"]
+    values = ["^.*24\\.04 (M|m)inimal.*$"]
     regex  = true
   }
 }
