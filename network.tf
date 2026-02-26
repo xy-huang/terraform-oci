@@ -87,6 +87,90 @@ resource "oci_core_security_list" "security_list_on_premises" {
   }
 }
 
+resource "oci_core_security_list" "security_list_public" {
+  #Required
+  compartment_id = var.compartment_id
+  vcn_id         = oci_core_vcn.generated_oci_core_vcn.id
+
+  #Optional
+  defined_tags = merge(local.pre_defined_tags, {
+    "Resource-Tags.Family" = "Core",
+    "Resource-Tags.Name"   = "Security List for public access",
+    "Resource-Tags.Type"   = "core_security_list"
+  })
+  display_name = "Security List for Public Access"
+  egress_security_rules {
+    #Required
+    destination = local.cidr_blocks.ALL_TRAFFIC
+    protocol    = local.security_rule_protocols.ALL
+
+    #Optional
+    description      = "allows outgoing traffic on all ports to all destinations"
+    destination_type = local.security_rule_types.CIDR_BLOCK
+    stateless        = false
+  }
+  egress_security_rules {
+    #Required
+    destination = local.cidr_blocks.ALL_TRAFFIC_IPV6
+    protocol    = local.security_rule_protocols.ALL
+
+    #Optional
+    description      = "allows outgoing traffic on all ports to all destinations"
+    destination_type = local.security_rule_types.CIDR_BLOCK
+    stateless        = false
+  }
+  ingress_security_rules {
+    #Required
+    protocol = local.security_rule_protocols.TCP
+    source   = local.cidr_blocks.ALL_TRAFFIC
+
+    #Optional
+    description = "allows incoming SSH on TCP port 22 from all sources"
+    source_type = local.security_rule_types.CIDR_BLOCK
+    stateless   = false
+    tcp_options {
+
+      #Optional
+      max = 22
+      min = 22
+    }
+  }
+  ingress_security_rules {
+    #Required
+    protocol = local.security_rule_protocols.TCP
+    source   = local.cidr_blocks.ALL_TRAFFIC_IPV6
+
+    #Optional
+    description = "allows incoming SSH on TCP port 22 from all sources"
+    source_type = local.security_rule_types.CIDR_BLOCK
+    stateless   = false
+    tcp_options {
+
+      #Optional
+      max = 22
+      min = 22
+    }
+  }
+  ingress_security_rules {
+    #Required
+    protocol = local.security_rule_protocols.ICMP
+    source   = local.cidr_blocks.ALL_TRAFFIC
+    #Optional
+    description = "allows incoming ICMP calls from all sources"
+    source_type = local.security_rule_types.CIDR_BLOCK
+    stateless   = false
+  }
+  ingress_security_rules {
+    #Required
+    protocol = local.security_rule_protocols.ICMP
+    source   = local.cidr_blocks.ALL_TRAFFIC_IPV6
+    #Optional
+    description = "allows incoming ICMP calls from all sources"
+    source_type = local.security_rule_types.CIDR_BLOCK
+    stateless   = false
+  }
+}
+
 resource "oci_core_subnet" "generated_oci_core_subnet" {
   cidr_block     = var.subnet_cidr
   compartment_id = var.compartment_id
@@ -95,13 +179,16 @@ resource "oci_core_subnet" "generated_oci_core_subnet" {
     "Resource-Tags.Name"   = "subnet-20240702-2137",
     "Resource-Tags.Type"   = "core_subnet"
   })
-  display_name      = "subnet-20240702-2137"
-  dns_label         = "subnet07022151"
-  security_list_ids = [oci_core_security_list.security_list_on_premises.id]
-  route_table_id    = oci_core_vcn.generated_oci_core_vcn.default_route_table_id
-  vcn_id            = oci_core_vcn.generated_oci_core_vcn.id
-  ipv6cidr_block    = cidrsubnet(oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks.0, 64 - substr(oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks.0, -2, -1), 0)
-  ipv6cidr_blocks   = [for cidr in oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks : cidrsubnet(cidr, 64 - substr(cidr, -2, -1), 0)]
+  display_name = "subnet-20240702-2137"
+  dns_label    = "subnet07022151"
+  security_list_ids = [
+    oci_core_security_list.security_list_on_premises.id,
+    oci_core_security_list.security_list_public.id
+  ]
+  route_table_id  = oci_core_vcn.generated_oci_core_vcn.default_route_table_id
+  vcn_id          = oci_core_vcn.generated_oci_core_vcn.id
+  ipv6cidr_block  = cidrsubnet(oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks.0, 64 - substr(oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks.0, -2, -1), 0)
+  ipv6cidr_blocks = [for cidr in oci_core_vcn.generated_oci_core_vcn.ipv6cidr_blocks : cidrsubnet(cidr, 64 - substr(cidr, -2, -1), 0)]
   lifecycle {
     ignore_changes = [
     ]
